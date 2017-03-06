@@ -1,0 +1,13 @@
+sitemap theairboard label="TheAirboard"
+{
+	Frame label="Status" {
+		Text item=TheAirboardStatusUptime icon="clock"
+		Text item=TheAirboardStatusTemperature icon="temperature" valuecolor=[>30="red",>20="yellow",<20="green"]
+		Text item=TheAirboardStatusBattery icon="battery" valuecolor=[>3.1="green",>2.7="yellow",<2.7="red"]
+		Text item=TheAirboardStatusLedColourIndex
+		Text item=TheAirboardStatusLedColour icon="colorwheel"
+	}
+	Frame label="LED Colour Control" {
+		Switch item=TheAirboardLedColourIndex label="LED Colour" mappings=[1="Red", 2="Green", 3="Blue"]
+	}
+}

@@ -1,0 +1,10 @@
+Group   gTheAirboardStatus
+Number  TheAirboardStatusUptime          "Uptime [%d mSecs]"         (gTheAirboardStatus)  {mqtt="<[emonpi:theairboard/status/uptime:state:default]"}
+Number  TheAirboardStatusBattery         "Battery level [%d volts]"  (gTheAirboardStatus)  {mqtt="<[emonpi:theairboard/status/battery:state:default]"}
+Number  TheAirboardStatusLedColourIndex  "LED Colour Index [%d]"     (gTheAirboardStatus)  {mqtt="<[emonpi:theairboard/status/led_colour:state:default]"}
+String  TheAirboardStatusLedColour       "LED Colour [%s]"           (gTheAirboardStatus)
+Number  TheAirboardStatusTemperature     "Temperature [%.2f°C]"      (gTheAirboardStatus)  {mqtt="<[emonpi:theairboard/status/temperature:state:default]"}
+
+Group   gTheAirboardControl
+Number  TheAirboardLedColourIndex
+String  TheAirboardControlLedColourIndex "[%s]"                      (gTheAirboardControl) {mqtt=">[emonpi:theairboard/control/led:command:*:default]"}

@@ -1,0 +1,35 @@
+val String notificationTo = "greenthegarden@gmail.com"
+val Number lowBatteryThreshold = 4.0
+
+rule "TheAirboard Low Battery Notification"
+when
+	Item TheAirboardStatusBattery changed
+then
+	var Number BatteryVoltage = TheAirboardStatusBattery.state as Number
+	if (BatteryVoltage < lowBatteryThreshold) {
+      sendNotification(notificationTo, "TheAirboard low battery")
+    }
+end
+
+rule "TheAirboard LED Colour Change"
+when
+	Item TheAirboardLedColourIndex changed
+then
+	TheAirboardControlLedColourIndex.sendCommand(TheAirboardLedColourIndex.state.toString)
+end
+
+rule "TheAirboard LED Colour Text"
+when
+	Item TheAirboardStatusLedColourIndex changed
+then
+	var Number ColourIndex = TheAirboardStatusLedColourIndex.state as Number
+	if (ColourIndex == 1) {
+		postUpdate(TheAirboardStatusLedColour, "RED")
+	} else if (ColourIndex == 2) {
+		postUpdate(TheAirboardStatusLedColour, "GREEN")
+	} else if (ColourIndex == 3) {
+		postUpdate(TheAirboardStatusLedColour, "BLUE")
+	} else {
+		postUpdate(TheAirboardStatusLedColour, "ERROR")
+	}
+end
