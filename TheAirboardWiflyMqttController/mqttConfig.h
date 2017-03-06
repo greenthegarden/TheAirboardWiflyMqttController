@@ -65,7 +65,7 @@ const char UPTIME_STATUS[] PROGMEM = "theairboard/status/uptime";
 const char MEMORY_STATUS[] PROGMEM = "theairboard/status/memory";
 const char BATTERY_STATUS[] PROGMEM = "theairboard/status/battery";
 const char LED_COLOUR_STATUS[] PROGMEM = "theairboard/status/led_colour";
-const char TEMPERATURE_STATUS[] PROGMEM = "theairboard/status/led_colour";
+const char TEMPERATURE_STATUS[] PROGMEM = "theairboard/status/temperature";
 
 PGM_P const STATUS_TOPICS[] PROGMEM = {
     MQTT_STATUS,          // idx = 0

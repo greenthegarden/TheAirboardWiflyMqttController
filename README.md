@@ -4,5 +4,5 @@ MQTT controller to change the LED colour on a [The AirBoard](http://theairboard.
 
 Requires the following libraries:
 *   [TheAirBoard](https://github.com/theairboard/TheAirBoard)
-*   [WiFly](https://github.com/dpslwk/WiFly)
+*   [WiFly](https://github.com/greenthegarden/WiFly)
 *   [MQTT](https://github.com/knolleary/pubsubclient)
