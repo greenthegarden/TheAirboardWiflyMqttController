@@ -1,26 +1,30 @@
-#ifndef THEAIRBOARDWIFLYMQTTPUBLISHER_MQTT_CONFIG_H_
-#define THEAIRBOARDWIFLYMQTTPUBLISHER_MQTT_CONFIG_H_
+#ifndef THEAIRBOARDWIFLYMQTTCONTROLLER_MQTT_CONFIG_H_
+#define THEAIRBOARDWIFLYMQTTCONTROLLER_MQTT_CONFIG_H_
+
 
 #include <PubSubClient.h>
 
 
 // MQTT parameters
-IPAddress mqttServerAddr(192, 168, 1, 50); // emonPi
-char mqttClientId[] = "theairboard";
+IPAddress mqttServerAddr(192, 168, 1, 52); // emonPi
+const char * MQTT_CLIENT_ID = "relayshield";
+const char * MQTT_USERNAME = "emonpi";
+const char * MQTT_PASSWORD = "emonpimqtt2016";
 const int MQTT_PORT = 1883;
+
+unsigned long lastReconnectAttempt = 0UL;
+const unsigned long RECONNECTION_ATTEMPT_INTERVAL = 5000UL;
+
+boolean mqttClientConnected = false;
 
 const byte BUFFER_SIZE            = 32;
 char topicBuffer[BUFFER_SIZE];
 char payloadBuffer[BUFFER_SIZE];
-//char message[BUFFER_SIZE];
 
 // callback definition for MQTT
 void callback(char* topic,
               uint8_t* payload,
-              unsigned int length)
-{
-  // nothing to do here as only publishing
-}
+              unsigned int length);
 
 PubSubClient mqttClient(mqttServerAddr, MQTT_PORT, callback, wiflyClient);
 
@@ -43,7 +47,6 @@ PGM_P const MQTT_PAYLOADS[] PROGMEM = {
     MQTT_PAYLOAD_SLEEP,     // idx = 5
 };
 
-/* MQTT_PAYLOADS indices, must match table above */
 typedef enum {
   MQTT_PAYLOAD_CONNECTED_IDX = 0,
   MQTT_PAYLOAD_OK_IDX = 1,
@@ -61,8 +64,8 @@ const char IP_ADDR_STATUS[] PROGMEM = "theairboard/status/ip_addr";
 const char UPTIME_STATUS[] PROGMEM = "theairboard/status/uptime";
 const char MEMORY_STATUS[] PROGMEM = "theairboard/status/memory";
 const char BATTERY_STATUS[] PROGMEM = "theairboard/status/battery";
-const char REPORT_STATUS[] PROGMEM = "theairboard/status/report";
-const char DHT22_STATUS[] PROGMEM = "theairboard/status/dht22";
+const char LED_COLOUR_STATUS[] PROGMEM = "theairboard/status/led_colour";
+const char TEMPERATURE_STATUS[] PROGMEM = "theairboard/status/led_colour";
 
 PGM_P const STATUS_TOPICS[] PROGMEM = {
     MQTT_STATUS,          // idx = 0
@@ -72,8 +75,8 @@ PGM_P const STATUS_TOPICS[] PROGMEM = {
     UPTIME_STATUS,         // idx = 4
     MEMORY_STATUS, // idx = 5
     BATTERY_STATUS,          // idx = 6
-    REPORT_STATUS,        // idx = 7
-    DHT22_STATUS,       // idx = 8
+    LED_COLOUR_STATUS,      // idx = 7
+    TEMPERATURE_STATUS,   // idx = 8
 };
 
 typedef enum {
@@ -84,23 +87,21 @@ typedef enum {
   UPTIME_STATUS_IDX = 4,
   MEMORY_STATUS_IDX = 5,
   BATTERY_STATUS_IDX = 6,
-  REPORT_STATUS_IDX = 7,
-  DHT22_STATUS_IDX = 8,
+  LED_COLOUR_STATUS_IDX = 7,
+  TEMPERATURE_STATUS_IDX = 8,
 } status_topics;
 
-// measurement topics
-const char DHT22_TEMP []              PROGMEM = "theairboard/measurement/DHT22_T";
-const char DHT22_HUMIDITY[]           PROGMEM = "theairboard/measurement/DHT22_H";
 
-//tables to refer to strings
-PGM_P const MEASUREMENT_TOPICS[]      PROGMEM = { DHT22_TEMP,             // idx = 0
-                                                  DHT22_HUMIDITY,         // idx = 1
-                                                };
+// control topics
+const char THEAIRBOARD_LED_CONTROL[] PROGMEM = "theairboard/control/led";
+
+PGM_P const CONTROL_TOPICS[] PROGMEM = {
+    THEAIRBOARD_LED_CONTROL,          // idx = 0
+};
 
 typedef enum {
-  DHT22_TEMP_IDX = 0,
-  DHT22_HUMIDITY_IDX = 1,
-} measurement_topics_idx;
+  THEAIRBOARD_LED_CONTROL_IDX = 0,
+} control_topics;
 
 
 void publish_connected() {
@@ -113,18 +114,6 @@ void publish_connected() {
   mqttClient.publish(topicBuffer, payloadBuffer);
 }
 
-#if ENABLE_VERSION
-void publish_version() {
-  topicBuffer[0] = '\0';
-  strcpy_P(topicBuffer,
-           (char *)pgm_read_word(&(STATUS_TOPICS[VERSION_STATUS_IDX])));
-  payloadBuffer[0] = '\0';
-  sprintf(payloadBuffer, "%s", VERSION);
-  mqttClient.publish(topicBuffer, payloadBuffer);
-}
-#endif
-
-#if 0
 void publish_status_interval() {
   topicBuffer[0] = '\0';
   strcpy_P(topicBuffer,
@@ -133,7 +122,6 @@ void publish_status_interval() {
   mqttClient.publish(topicBuffer,
                      ltoa(STATUS_UPDATE_INTERVAL, payloadBuffer, 10));
 }
-#endif
 
 #if 0
 void publish_ip_address() {
@@ -166,57 +154,57 @@ void publish_memory() {
 }
 #endif
 
-void publish_configuration() {
-#if ENABLE_VERSION
-  publish_version();
-#endif
-#if 0
-  publish_status_interval();
-  publish_ip_address();
-#endif
-}
-
-#if ENABLE_THEAIRBOARD_SUPPORT
-void publish_battery()
-{
+void publish_battery() {
   topicBuffer[0] = '\0';
   strcpy_P(topicBuffer, (char*)pgm_read_word(&(STATUS_TOPICS[BATTERY_STATUS_IDX])));
   payloadBuffer[0] = '\0';
   dtostrf(board.batteryChk(), 1, FLOAT_DECIMAL_PLACES, payloadBuffer);
   mqttClient.publish(topicBuffer, payloadBuffer);
 }
+
+void publish_led_colour(byte colour_idx) {
+  topicBuffer[0] = '\0';
+  strcpy_P(topicBuffer, (char*)pgm_read_word(&(STATUS_TOPICS[LED_COLOUR_STATUS_IDX])));
+  payloadBuffer[0] = '\0';
+  mqttClient.publish(topicBuffer, itoa(colour_idx, payloadBuffer, 10));
+}
+
+void publish_temperature() {
+  topicBuffer[0] = '\0';
+  strcpy_P(topicBuffer, (char*)pgm_read_word(&(STATUS_TOPICS[TEMPERATURE_STATUS_IDX])));
+  payloadBuffer[0] = '\0';
+  dtostrf(board.getTemp(), 1, FLOAT_DECIMAL_PLACES, payloadBuffer);
+  mqttClient.publish(topicBuffer, payloadBuffer);
+}
+
+void publish_configuration() {
+  publish_status_interval();
+#if 0
+  publish_ip_address();
 #endif
+}
 
 void publish_status()
 {
-  publish_connected();
   publish_uptime();
 #if USE_MEMORY_FREE
   publish_memory();
 #endif
-#if ENABLE_THEAIRBOARD_SUPPORT
   publish_battery();
-#endif
+  publish_temperature();
 }
 
-
-byte mqtt_connect()
-{
-  if (!wiflyConnectedToNetwork)
-    wifly_connect();
-
-  if (wiflyConnectedToNetwork) {
-    DEBUG_LOG(1, "connecting to broker");
-    if (mqttClient.connect(mqttClientId)) {
-      DEBUG_LOG(1, "  connected");
-      publish_status();
-      return true;
-    } else {
-      DEBUG_LOG(1, "  failed");
-      delay(AFTER_ERROR_DELAY);
-    }
+boolean mqtt_connect() {
+  if (mqttClient.connect(MQTT_CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD)) {
+    // Once connected, publish an announcement ...
+    publish_connected();
+    publish_configuration();
+    publish_status();
+    // ... and subscribe to topics (should have list)
+    mqttClient.subscribe("theairboard/control/#");
   }
-  return false;
+  return mqttClient.connected();
 }
 
-#endif  /* THEAIRBOARDWIFLYMQTTPUBLISHER_MQTT_CONFIG_H_ */
+
+#endif  /* THEAIRBOARDWIFLYMQTTCONTROLLER_MQTT_CONFIG_H_ */
