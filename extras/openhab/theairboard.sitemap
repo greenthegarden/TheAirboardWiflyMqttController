@@ -1,13 +1,22 @@
 sitemap theairboard label="TheAirboard"
 {
-	Frame label="Status" {
-		Text item=TheAirboardStatusUptime icon="clock"
-		Text item=TheAirboardStatusTemperature icon="temperature" valuecolor=[>30="red",>20="yellow",<20="green"]
-		Text item=TheAirboardStatusBattery icon="battery" valuecolor=[>3.1="green",>2.7="yellow",<2.7="red"]
-		Text item=TheAirboardStatusLedColourIndex
-		Text item=TheAirboardStatusLedColour icon="colorwheel"
-	}
 	Frame label="LED Colour Control" {
-		Switch item=TheAirboardLedColourIndex label="LED Colour" mappings=[1="Red", 2="Green", 3="Blue"]
+		Switch item=TheAirboardSwitchLedColourIndex label="LED Colour" mappings=[1="Red", 2="Green", 3="Blue"]
+	}
+	Frame label="LED Colour Status" {
+		Text item=TheAirboardLedColourIndex
+		Text item=TheAirboardLedColour icon="colorwheel"		
+	}
+	Frame label="Status" {
+		Text item=TheAirboardUptime icon="clock"
+		Text item=TheAirboardTemperature icon="temperature" valuecolor=[>30="red",>20="yellow",<20="green"]
+		Text item=TheAirboardBattery icon="battery" valuecolor=[>3.1="green",>2.7="yellow",<2.7="red"]
+		Text item=TheAirboardLastStatusUpdate icon="calendar"
+		Switch item=TheAirboardState
+	}
+	Frame label="Configuration" {
+		Text item=TheAirboardLastConnected icon="calendar"
+		Text item=TheAirboardStatusInterval icon="clock"
+		Text item=TheAirboardIpAddress icon="network"
 	}
 }
