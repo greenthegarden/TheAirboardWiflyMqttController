@@ -2,6 +2,14 @@
 
 #include "config.h"
 
+void theairboard_init() {
+  pinMode(RED, OUTPUT);         // initialize the RED LED pin as an output
+  pinMode(GREEN, OUTPUT);       // initialize the GREEN LED pin as an output
+  pinMode(BLUE, OUTPUT);        // initialize the BLUE LED pin as an output
+  analogWrite(GREEN, 1);        // switch ON indicator at low power
+  Serial.begin(BAUD_RATE);
+}
+
 void theairboard_set_led_red() {
   digitalWrite(RED, 1); digitalWrite(GREEN, 0); digitalWrite(BLUE, 0);
   publish_led_colour(1);

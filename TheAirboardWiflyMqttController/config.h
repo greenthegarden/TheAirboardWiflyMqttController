@@ -25,16 +25,6 @@ TheAirBoard board;
 
 unsigned long statusPreviousMillis = 0UL;
 
-void theairboard_init() {
-  pinMode(RED, OUTPUT);         // initialize the RED LED pin as an output
-  pinMode(GREEN, OUTPUT);       // initialize the GREEN LED pin as an output
-  pinMode(BLUE, OUTPUT);        // initialize the BLUE LED pin as an output
-  analogWrite(GREEN, 1);        // switch ON indicator at low power
-  Serial.begin(BAUD_RATE);
-}
-
-char led_colour = '0';
-
 // Macros
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 

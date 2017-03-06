@@ -7,7 +7,7 @@
 
 // MQTT parameters
 IPAddress mqttServerAddr(192, 168, 1, 52); // emonPi
-const char * MQTT_CLIENT_ID = "relayshield";
+const char * MQTT_CLIENT_ID = "theairboard";
 const char * MQTT_USERNAME = "emonpi";
 const char * MQTT_PASSWORD = "emonpimqtt2016";
 const int MQTT_PORT = 1883;
@@ -195,15 +195,20 @@ void publish_status()
 }
 
 boolean mqtt_connect() {
-  if (mqttClient.connect(MQTT_CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD)) {
-    // Once connected, publish an announcement ...
-    publish_connected();
-    publish_configuration();
-    publish_status();
-    // ... and subscribe to topics (should have list)
-    mqttClient.subscribe("theairboard/control/#");
+  if (!wiflyConnectedToNetwork)
+      wifly_connect();
+
+  if (wiflyConnectedToNetwork) {
+    if (mqttClient.connect(MQTT_CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD)) {
+      // Once connected, publish an announcement ...
+      publish_connected();
+      publish_configuration();
+      publish_status();
+      // ... and subscribe to topics (should have list)
+      mqttClient.subscribe("theairboard/control/led");
+    }
+    return mqttClient.connected();
   }
-  return mqttClient.connected();
 }
 
 
