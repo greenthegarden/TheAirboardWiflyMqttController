@@ -4,7 +4,6 @@
 
 #include <PubSubClient.h>
 
-
 // MQTT parameters
 IPAddress mqttServerAddr(192, 168, 1, 52); // emonPi
 const char * MQTT_CLIENT_ID = "theairboard";
@@ -15,7 +14,7 @@ const int MQTT_PORT = 1883;
 unsigned long lastReconnectAttempt = 0UL;
 const unsigned long RECONNECTION_ATTEMPT_INTERVAL = 5000UL;
 
-boolean mqttClientConnected = false;
+//boolean mqttClientConnected = false;
 
 const byte BUFFER_SIZE            = 32;
 char topicBuffer[BUFFER_SIZE];
@@ -27,7 +26,6 @@ void callback(char* topic,
               unsigned int length);
 
 PubSubClient mqttClient(mqttServerAddr, MQTT_PORT, callback, wiflyClient);
-
 
 // MQTT topic definitions
 
@@ -123,18 +121,17 @@ void publish_status_interval() {
                      ltoa(STATUS_UPDATE_INTERVAL, payloadBuffer, 10));
 }
 
-#if 0
+
 void publish_ip_address() {
   topicBuffer[0] = '\0';
   strcpy_P(topicBuffer,
            (char *)pgm_read_word(&(STATUS_TOPICS[IP_ADDR_STATUS_IDX])));
   payloadBuffer[0] = '\0';
-  IPAddress ip = WiFly.ip();
-  sprintf(payloadBuffer, "%i%c%i%c%i%c%i", ip[0], '.', ip[1], '.', ip[2], '.',
-          ip[3]);
+//  char ip[16] = WiFly.ip();
+//  sprintf(payloadBuffer, "%i%c%i%c%i%c%i", ip[0], '.', ip[1], '.', ip[2], '.',
+  //        ip[3]);
   mqttClient.publish(topicBuffer, payloadBuffer);
 }
-#endif
 
 void publish_uptime() {
   topicBuffer[0] = '\0';
@@ -144,15 +141,13 @@ void publish_uptime() {
   mqttClient.publish(topicBuffer, ltoa(millis(), payloadBuffer, 10));
 }
 
-# if USE_MEMORY_FREE
 void publish_memory() {
   topicBuffer[0] = '\0';
   strcpy_P(topicBuffer,
            (char *)pgm_read_word(&(STATUS_TOPICS[MEMORY_STATUS_IDX])));
   payloadBuffer[0] = '\0';
-  mqttClient.publish(topicBuffer, itoa(getFreeMemory(), payloadBuffer, 10));
+  mqttClient.publish(topicBuffer, itoa(freeMemory(), payloadBuffer, 10));
 }
-#endif
 
 void publish_battery() {
   topicBuffer[0] = '\0';
@@ -187,9 +182,7 @@ void publish_configuration() {
 void publish_status()
 {
   publish_uptime();
-#if USE_MEMORY_FREE
   publish_memory();
-#endif
   publish_battery();
   publish_temperature();
 }

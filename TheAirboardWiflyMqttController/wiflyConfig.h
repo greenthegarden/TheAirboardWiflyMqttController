@@ -2,7 +2,6 @@
 #define THEAIRBOARDWIFLYMQTTCONTROLLER_WIFLY_CONFIG_H_
 
 
-// WiFly libraries
 #include <SPI.h>
 #include <WiFly.h>
 
@@ -15,7 +14,6 @@ WiFlyClient    wiflyClient;
 void wifly_configure() {
   WiFly.setUart(&Serial);
 }
-
 
 byte wifly_connect() {
   WiFly.begin();

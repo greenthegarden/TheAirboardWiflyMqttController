@@ -25,7 +25,7 @@ void theairboard_set_led_blue() {
   publish_led_colour(3);
 }
 
-void theairboard_set_led_colour(int colour_idx) {
+void theairboard_set_led_colour(byte colour_idx) {
   switch(colour_idx) {
     case 1 : // red
       theairboard_set_led_red();
@@ -110,13 +110,13 @@ void loop()
   unsigned long now = millis();
 
   if (!mqttClient.connected()) {
-    mqttClientConnected = false;
+//    mqttClientConnected = false;
     if (now - lastReconnectAttempt >= RECONNECTION_ATTEMPT_INTERVAL) {
       lastReconnectAttempt = now;
       // Attempt to reconnect
       if (mqtt_connect()) {
         lastReconnectAttempt = 0;
-        mqttClientConnected = true;
+//        mqttClientConnected = true;
       }
     }
   } else {
@@ -125,7 +125,7 @@ void loop()
   }
 
   if (now - statusPreviousMillis >= STATUS_UPDATE_INTERVAL) {
-    if (mqttClientConnected) {
+    if (mqttClient.connected()) {
       statusPreviousMillis = now;
       publish_status();
     }

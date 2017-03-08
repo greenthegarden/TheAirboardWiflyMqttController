@@ -12,7 +12,7 @@ const unsigned long STATUS_UPDATE_INTERVAL = 1UL * 60UL * 1000UL;    // x minute
 
 /**** Exernal library imports ****/
 
-// The Airboard ()
+// The Airboard (https://github.com/theairboard/TheAirBoard)
 #include <TheAirBoard.h>
 
 // MemoryFree (https://github.com/maniacbug/MemoryFree)
