@@ -113,10 +113,8 @@ void loop()
 //    mqttClientConnected = false;
     if (now - lastReconnectAttempt >= RECONNECTION_ATTEMPT_INTERVAL) {
       lastReconnectAttempt = now;
-      // Attempt to reconnect
       if (mqtt_connect()) {
         lastReconnectAttempt = 0;
-//        mqttClientConnected = true;
       }
     }
   } else {
