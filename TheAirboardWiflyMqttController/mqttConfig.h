@@ -147,28 +147,9 @@ void publish_memory() {
   mqttClient.publish(topicBuffer, itoa(freeMemory(), payloadBuffer, 10));
 }
 
-void publish_battery() {
-  topicBuffer[0] = '\0';
-  strcpy_P(topicBuffer, (char*)pgm_read_word(&(STATUS_TOPICS[BATTERY_STATUS_IDX])));
-  payloadBuffer[0] = '\0';
-  dtostrf(board.batteryChk(), 1, FLOAT_DECIMAL_PLACES, payloadBuffer);
-  mqttClient.publish(topicBuffer, payloadBuffer);
-}
-
-void publish_led_colour(byte colour_idx) {
-  topicBuffer[0] = '\0';
-  strcpy_P(topicBuffer, (char*)pgm_read_word(&(STATUS_TOPICS[LED_COLOUR_STATUS_IDX])));
-  payloadBuffer[0] = '\0';
-  mqttClient.publish(topicBuffer, itoa(colour_idx, payloadBuffer, 10));
-}
-
-void publish_temperature() {
-  topicBuffer[0] = '\0';
-  strcpy_P(topicBuffer, (char*)pgm_read_word(&(STATUS_TOPICS[TEMPERATURE_STATUS_IDX])));
-  payloadBuffer[0] = '\0';
-  dtostrf(board.getTemp(), 1, FLOAT_DECIMAL_PLACES, payloadBuffer);
-  mqttClient.publish(topicBuffer, payloadBuffer);
-}
+void publish_battery();
+void publish_led_colour(byte colour_idx);
+void publish_temperature();
 
 void publish_configuration() {
   publish_status_interval();
@@ -196,7 +177,12 @@ boolean mqtt_connect() {
       publish_configuration();
       publish_status();
       // ... and subscribe to topics (should have list)
-      mqttClient.subscribe("theairboard/control/led");
+//      mqttClient.subscribe("theairboard/control/led");
+      for (byte i = 0; i < ARRAY_SIZE(CONTROL_TOPICS); i++) {
+        topicBuffer[0] = '\0';
+        strcpy_P(topicBuffer, (PGM_P)pgm_read_word(&(CONTROL_TOPICS[i])));
+        mqttClient.subscribe(topicBuffer);
+      }
     }
     return mqttClient.connected();
   }

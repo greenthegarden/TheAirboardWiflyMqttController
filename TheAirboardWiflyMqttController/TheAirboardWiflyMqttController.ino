@@ -2,44 +2,6 @@
 
 #include "config.h"
 
-void theairboard_init() {
-  pinMode(RED, OUTPUT);         // initialize the RED LED pin as an output
-  pinMode(GREEN, OUTPUT);       // initialize the GREEN LED pin as an output
-  pinMode(BLUE, OUTPUT);        // initialize the BLUE LED pin as an output
-  analogWrite(GREEN, 1);        // switch ON indicator at low power
-  Serial.begin(BAUD_RATE);
-}
-
-void theairboard_set_led_red() {
-  digitalWrite(RED, 1); digitalWrite(GREEN, 0); digitalWrite(BLUE, 0);
-  publish_led_colour(1);
-}
-
-void theairboard_set_led_green() {
-  digitalWrite(RED, 0); digitalWrite(GREEN, 1); digitalWrite(BLUE, 0);
-  publish_led_colour(2);
-}
-
-void theairboard_set_led_blue() {
-  digitalWrite(RED, 0); digitalWrite(GREEN, 0); digitalWrite(BLUE, 1);
-  publish_led_colour(3);
-}
-
-void theairboard_set_led_colour(byte colour_idx) {
-  switch(colour_idx) {
-    case 1 : // red
-      theairboard_set_led_red();
-      break;
-    case 2 : // green
-      theairboard_set_led_green();
-      break;
-    case 3 : // blue
-      theairboard_set_led_blue();
-      break;
-    default:
-      break;
-  }
-}
 
 void callback(char *topic, uint8_t *payload, unsigned int length) {
   // handle message arrived
@@ -76,7 +38,7 @@ void callback(char *topic, uint8_t *payload, unsigned int length) {
 
   if (controlTopicFound) {
     // switch to case statements
-    if (topicIdx == THEAIRBOARD_LED_CONTROL_IDX) { // topic is RELAY_CONTROL
+    if (topicIdx == THEAIRBOARD_LED_CONTROL_IDX) { // topic is THEAIRBOARD_LED_CONTROL
       // message is expected to be an integer
       byte led_colour_idx = atoi(message);
       if (led_colour_idx > 0) {
@@ -110,7 +72,6 @@ void loop()
   unsigned long now = millis();
 
   if (!mqttClient.connected()) {
-//    mqttClientConnected = false;
     if (now - lastReconnectAttempt >= RECONNECTION_ATTEMPT_INTERVAL) {
       lastReconnectAttempt = now;
       if (mqtt_connect()) {
@@ -118,7 +79,6 @@ void loop()
       }
     }
   } else {
-    // Client connected
     mqttClient.loop();
   }
 

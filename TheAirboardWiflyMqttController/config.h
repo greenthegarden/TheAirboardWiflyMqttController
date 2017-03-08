@@ -12,16 +12,12 @@ const unsigned long STATUS_UPDATE_INTERVAL = 1UL * 60UL * 1000UL;    // x minute
 
 /**** Exernal library imports ****/
 
-// The Airboard (https://github.com/theairboard/TheAirBoard)
-#include <TheAirBoard.h>
 
 // MemoryFree (https://github.com/maniacbug/MemoryFree)
 #include <MemoryFree.h>
 
 
 /**** global variable definitions ****/
-
-TheAirBoard board;
 
 unsigned long statusPreviousMillis = 0UL;
 
@@ -35,6 +31,7 @@ unsigned long statusPreviousMillis = 0UL;
 #include "networkConfig.h"  // Network configuration
 #include "wiflyConfig.h"   // WiFly configuration
 #include "mqttConfig.h"    // MQTT configuration
+#include "theairboardConfig.h"
 
 
 #endif  /* THEAIRBOARDWIFLYMQTTCONTROLLER_CONFIG_H_ */
