@@ -2,7 +2,6 @@
 
 #include "config.h"
 
-
 void callback(char *topic, uint8_t *payload, unsigned int length) {
   // handle message arrived
   /* topic = part of the variable header:has topic name of the topic where the

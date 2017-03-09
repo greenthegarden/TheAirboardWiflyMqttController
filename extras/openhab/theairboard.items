@@ -12,13 +12,13 @@ Group     gTheAirboardStatus
 Number    TheAirboardUptimeRaw               "[%d]"                                           (gTheAirboard, gTheAirboardStatus)  {mqtt="<[emonpi:theairboard/status/uptime:state:default]"}
 Number    TheAirboardUptime                  "Uptime [%d secs]" 
 Number    TheAirboardMemory                  "Memory [%d bytes]"                              (gTheAirboard, gTheAirboardStatus)  {mqtt="<[emonpi:theairboard/status/memory:state:default]"}
-Number    TheAirboardBattery                 "Battery level [%.1f volts]"                       (gTheAirboard, gTheAirboardStatus)  {mqtt="<[emonpi:theairboard/status/battery:state:default]"}
+Number    TheAirboardBattery                 "Battery level [%.1f volts]"                     (gTheAirboard, gTheAirboardStatus)  {mqtt="<[emonpi:theairboard/status/battery:state:default]"}
 Number    TheAirboardLedColourIndex          "LED Colour Index [%d]"                          (gTheAirboard, gTheAirboardStatus)  {mqtt="<[emonpi:theairboard/status/led_colour:state:default]"}
 String    TheAirboardLedColour               "LED Colour [%s]"                                (gTheAirboard, gTheAirboardStatus)
 Number    TheAirboardTemperature             "Temperature [%.1f°C]"                           (gTheAirboard, gTheAirboardStatus)  {mqtt="<[emonpi:theairboard/status/temperature:state:default]"}
 DateTime  TheAirboardLastStatusUpdate        "Last Status Update [%1$tT, %1$td.%1$tm.%1$tY]"  (gTheAirboard, gTheAirboardStatus)
 Switch    TheAirboardState                   "Connected"                                      (gTheAirboard, gTheAirboardStatus)
-
+			
 Group     gTheAirboardControl
 Number    TheAirboardSwitchLedColourIndex
 String    TheAirboardControlLedColourIndex   "[%s]"                                           (gTheAirboard, gTheAirboardControl) {mqtt=">[emonpi:theairboard/control/led:command:*:default]"}
