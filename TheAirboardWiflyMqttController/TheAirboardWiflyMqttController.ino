@@ -59,6 +59,7 @@ void setup()
   theairboard_init();
   wifly_configure();
   mqtt_connect();
+  set_led_colour_from_eeprom();
 }
 
 

@@ -176,8 +176,7 @@ boolean mqtt_connect() {
       publish_connected();
       publish_configuration();
       publish_status();
-      // ... and subscribe to topics (should have list)
-//      mqttClient.subscribe("theairboard/control/led");
+      // ... and subscribe to topics 
       for (byte i = 0; i < ARRAY_SIZE(CONTROL_TOPICS); i++) {
         topicBuffer[0] = '\0';
         strcpy_P(topicBuffer, (PGM_P)pgm_read_word(&(CONTROL_TOPICS[i])));

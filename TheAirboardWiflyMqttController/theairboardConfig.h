@@ -41,16 +41,19 @@ void publish_temperature() {
 void theairboard_set_led_red() {
   digitalWrite(RED, 1); digitalWrite(GREEN, 0); digitalWrite(BLUE, 0);
   publish_led_colour(1);
+  EEPROM.update(LED_STATE_EEPROM_ADDRESS, 1);
 }
 
 void theairboard_set_led_green() {
   digitalWrite(RED, 0); digitalWrite(GREEN, 1); digitalWrite(BLUE, 0);
   publish_led_colour(2);
+  EEPROM.update(LED_STATE_EEPROM_ADDRESS, 2);
 }
 
 void theairboard_set_led_blue() {
   digitalWrite(RED, 0); digitalWrite(GREEN, 0); digitalWrite(BLUE, 1);
   publish_led_colour(3);
+  EEPROM.update(LED_STATE_EEPROM_ADDRESS, 3);
 }
 
 void theairboard_set_led_colour(byte colour_idx) {
@@ -66,6 +69,14 @@ void theairboard_set_led_colour(byte colour_idx) {
       break;
     default:
       break;
+  }
+}
+
+void set_led_colour_from_eeprom() {
+  // check for existing LED value in EEPROM
+  byte colour_idx = EEPROM.read(LED_STATE_EEPROM_ADDRESS);
+  if( colour_idx != 0 ) {
+    theairboard_set_led_colour(colour_idx);
   }
 }
 

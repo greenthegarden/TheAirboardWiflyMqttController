@@ -10,14 +10,18 @@ const byte FLOAT_DECIMAL_PLACES   = 1;
 const unsigned long STATUS_UPDATE_INTERVAL = 1UL * 60UL * 1000UL;    // x minutes = x * 60 * 1000 miliiseconds
 
 
-/**** Exernal library imports ****/
+/**** External library imports ****/
 
 
 // MemoryFree (https://github.com/maniacbug/MemoryFree)
+#include <EEPROM.h>
 #include <MemoryFree.h>
 
 
 /**** global variable definitions ****/
+#ifndef LED_STATE_EEPROM_ADDRESS
+#define LED_STATE_EEPROM_ADDRESS 0; // eeprom address to store LED value
+#endif
 
 unsigned long statusPreviousMillis = 0UL;
 
